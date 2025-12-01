@@ -1,0 +1,39 @@
+/* Enhanced Modal Background Blur Effects - Very Light */
+.modal-backdrop-light {
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  transition: backdrop-filter 0.3s ease-in-out;
+}
+
+.modal-backdrop-medium {
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  transition: backdrop-filter 0.3s ease-in-out;
+}
+
+/* Smooth modal animations with light blur */
+.modal-enter {
+  opacity: 0;
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+}
+
+.modal-enter-active {
+  opacity: 1;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+  transition: all 0.3s ease-in-out;
+}
+
+.modal-exit {
+  opacity: 1;
+  backdrop-filter: blur(2px);
+  -webkit-backdrop-filter: blur(2px);
+}
+
+.modal-exit-active {
+  opacity: 0;
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  transition: all 0.3s ease-in-out;
+}

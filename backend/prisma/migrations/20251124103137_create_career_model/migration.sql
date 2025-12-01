@@ -1,0 +1,33 @@
+-- CreateTable
+CREATE TABLE "Career" (
+    "id" SERIAL NOT NULL,
+    "title" TEXT NOT NULL,
+    "category" TEXT,
+    "featured" BOOLEAN NOT NULL DEFAULT false,
+    "type" TEXT,
+    "description" TEXT,
+    "about" TEXT,
+    "date" TIMESTAMP(3),
+    "startTime" TEXT,
+    "endTime" TEXT,
+    "location" TEXT,
+    "company" TEXT,
+    "participants" INTEGER,
+    "maxParticipants" INTEGER,
+    "price" TEXT,
+    "jobOpportunities" TEXT,
+    "internshipOpportunities" TEXT,
+    "skillsRequired" TEXT,
+    "dressCode" TEXT,
+    "agenda" TEXT,
+    "speakers" TEXT,
+    "requirements" TEXT,
+    "availableSpots" INTEGER,
+    "registerUrl" TEXT,
+    "contactEmail" TEXT,
+    "contactPhone" TEXT,
+    "contactPerson" TEXT,
+    "tags" TEXT,
+
+    CONSTRAINT "Career_pkey" PRIMARY KEY ("id")
+);

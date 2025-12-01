@@ -1,0 +1,279 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+}
+
+enum Faculty {
+  COMPUTING
+  ENGINEERING
+  BUSINESS
+  HUMANITIES
+  SCIENCE
+  SLIIT_BUSINESS_SCHOOL
+  ALL_FACULTIES
+}
+
+enum Category {
+  CULTURAL
+  CONCERTS
+  MUSICAL
+  THEATRE_DRAMA
+  DANCE_PERFORMANCES
+  ART_EXHIBITIONS
+  FILM_SCREENINGS
+  COMEDY_SHOWS
+  FESTIVALS
+  CHARITY_DEDICATION
+  DONATION_DRIVES
+  COMMUNITY_GATHERINGS
+  CULTURAL_FAIRS
+  OPEN_MIC_NIGHTS
+  TALENT_SHOWS
+  BOOK_READINGS
+  FOOD_FESTIVALS
+  FASHION_SHOWS
+  FUNDRAISING_EVENTS
+  WORKSHOPS_CREATIVE
+  SPORTS_EVENTS
+}
+
+enum Price {
+  Free
+  Paid
+}
+
+enum Status {
+  Active
+  Inactive
+  Cancelled
+  Completed
+  Draft
+}
+
+model Event {
+  id                      Int            @id @default(autoincrement())
+  title                   String
+  description             String
+  fullDescription         String?
+  date                    DateTime
+  endDate                 DateTime?
+  time                    String
+  location                String
+  faculty                 Faculty
+  category                Category
+  organizer               String
+  maxParticipants         Int?
+  registeredCount         Int            @default(0)
+  price                   Price          @default(Free)
+  featured                Boolean        @default(false)
+  hasRegistration         Boolean        @default(true)
+  status                  Status         @default(Active)
+  tags                    String[]
+  requirements            String[]
+  agenda                  Json?
+  speakers                Json?
+  contact                 Json?
+  company                 String?
+  industry                String?
+  jobOpportunities        String?
+  internshipOpportunities String?
+  skillsRequired          String?
+  dresscode               String?
+  image                   String?
+  prizes                  String[]
+  createdAt               DateTime       @default(now())
+  updatedAt               DateTime
+  registrations           Registration[]
+  photos                  Photo[]
+}
+
+model Photo {
+  id           Int      @id @default(autoincrement())
+  eventId      Int?
+  event        Event?   @relation(fields: [eventId], references: [id])
+  clubId       Int?
+  club         Club?    @relation(fields: [clubId], references: [id])
+  url          String // relative URL to access the uploaded image
+  filename     String
+  photographer String?
+  caption      String?
+  uploadedAt   DateTime @default(now())
+}
+
+model Club {
+  id                  Int     @id @default(autoincrement())
+  name                String
+  description         String?
+  memberCount         Int?
+  establishedYear     Int?
+  category            String?
+  faculty             String?
+  status              String?
+  mission             String?
+  keyActivities       String?
+  achievements        String?
+  eventsCount         Int?
+  studentSatisfaction Float?
+  awards              String?
+  digitalInitiatives  String?
+  joinUrl             String?
+  contactInfo         String?
+  imageFilename       String? // stores the uploaded image filename (was previously mapped from `image`)
+  photos              Photo[]
+}
+
+model Career {
+  id          Int     @id @default(autoincrement())
+  title       String
+  category    String?
+  featured    Boolean @default(false)
+  type        String?
+  description String?
+  about       String?
+
+  date      DateTime?
+  startTime String?
+  endTime   String?
+  location  String?
+  company   String?
+
+  participants    Int? // current count
+  maxParticipants Int? // total capacity
+  price           String? // e.g., "Free"
+
+  jobOpportunities        String? // JSON string
+  internshipOpportunities String? // JSON string
+  skillsRequired          String? // JSON string
+
+  dressCode String?
+
+  agenda   String? // JSON string
+  speakers String? // JSON string
+
+  requirements String? // JSON string
+
+  availableSpots Int?
+  registerUrl    String?
+
+  contactEmail  String?
+  contactPhone  String?
+  contactPerson String?
+
+  tags          String? // JSON string
+  imageFilename String? // NEW: stores the uploaded image filename
+}
+
+model Announcement {
+  id             Int       @id @default(autoincrement())
+  title          String
+  tag            String? // e.g., URGENT, HIGH, NOTICE
+  date           DateTime // announcement posted date/time
+  author         String? // e.g., EventHub Team
+  views          Int? // e.g., 1250
+  priority       String? // High, Medium, Low
+  category       String? // e.g., Registration
+  faculty        String? // e.g., Faculty of Computing
+  description    String? // full content text
+  targetAudience String? // e.g., All Students
+  expiresAt      DateTime? // expiration date
+  attachments    String? // JSON: ["file1.pdf", "file2.pdf"]
+  contactEmail   String?
+  contactPhone   String?
+  contactPerson  String?
+}
+
+enum VenueCategory {
+  AUDITORIUM
+  LECTURE_HALL
+  LABORATORY
+  SPORTS_FACILITY
+  OUTDOOR_VENUE
+  CONFERENCE_ROOM
+  COMPUTER_LAB
+  SEMINAR_HALL
+  MULTIPURPOSE_HALL
+  WORKSHOP_SPACE
+}
+
+enum VenueAvailability {
+  AVAILABLE
+  BOOKED
+  MAINTENANCE
+  WEATHER_DEPENDENT
+}
+
+model Venue {
+  id             Int               @id @default(autoincrement())
+  name           String
+  category       VenueCategory
+  capacity       Int
+  location       String
+  description    String
+  image          String?
+  facilities     String[] // Array of facility names
+  availability   VenueAvailability @default(AVAILABLE)
+  bookingContact String
+
+  // Directions (stored as JSON)
+  directionsFromMainGate String?
+  directionsFromParking  String?
+  landmarks              String[] // Array of landmark descriptions
+
+  // Nearby facilities
+  nearbyFacilities String[] // Array of nearby facility names
+
+  // Suitable events
+  suitableEvents String[] // Array of event types
+
+  // Technical specifications (stored as JSON)
+  technicalSpecs Json?
+
+  // Booking and management
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  isActive              Boolean  @default(true)
+  bookingInstructions   String?
+  specialRequirements   String?
+  accessibilityFeatures String[] // Array of accessibility features
+
+  // Pricing (if applicable)
+  hourlyRate Float?
+  dailyRate  Float?
+
+  // Additional metadata
+  floor      String? // e.g., "Ground Floor", "2nd Floor"
+  building   String? // e.g., "Main Building", "Academic Block A"
+  roomNumber String? // e.g., "LH 01", "CL 05"
+}
+
+model Registration {
+  id                 Int      @id @default(autoincrement())
+  eventId            Int?
+  event              Event?   @relation(fields: [eventId], references: [id])
+  name               String
+  email              String
+  phone              String?
+  registrationNumber String?
+  receipt            String? // base64 or stored path for payment receipt
+  confirmPresence    Boolean  @default(false)
+  notes              String?
+  createdAt          DateTime @default(now())
+}
